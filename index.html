@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safe Link Checker</title>
+    
+    <!-- style -->
+    <link rel="stylesheet" href="./static/css/style.css" />
+    <link rel="stylesheet" href="./static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./static/css/animation.css">       <!-- Animation for chechking -->
+
+    <!-- js -->
+    <script type="javascript" src="./static/js/new.js"></script>
+    <script type="javascript" src="./static/js/bootstrap.bundle.js"></script>
+    <script type="javascript" src="./static/js/check.js"></script>
+    <script type="javascript" src="./static/js/isHttps.js"></script>        <!-- Checking https protocol -->
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" style="font-weight: 700; font-size: larger">Spam Detector</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item" style="margin-left: 750px">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#feat">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#foot">Contact</a>
+            </li>
+           
+            </ul>
+        </div>
+        </div>
+    </nav>
+    <div class="main" style="margin-top: 150px">
+        <center>
+            <form method="get">
+                <input type="text" name="url" id="url" placeholder="Paste link here" required />
+                <span>
+                    <input
+                        type="button"
+                        value="Search"
+                        id="checkButton"
+                    />
+                </span>
+
+                <!-- Result of checking -->
+		<div>
+	        Https protocol: <span id="result0" class="animated-icon"></span>
+		</div>
+		<div>
+			Certificate date: <span id="result1" class="animated-icon"></span>
+                </div>
+		<div>
+			Google safe browsing: <span id="result2" class="animated-icon"></span>
+                </div>
+
+            </form>
+
+	    <script src="./static/js/isHttps.js"> </script>
+
+        <script>
+
+		document.getElementById("checkButton").addEventListener("click", async () => {
+		const url = document.getElementById('url').value;
+		alert(url);
+		console.log(url);
+
+		try {
+			const usingHttps = await check_https_protocol(url);
+                    	if(usingHttps) {                                                                            
+				document.getElementById("result0").classList.add("tick-icon");
+				document.getElementById("result0").innerHTML = "&#10004;"; // Tick symbol
+			}
+			else {
+				document.getElementById("result0").classList.add("cross-icon");                      
+				document.getElementById("result0").innerHTML = "&times;"; // Cross symbol
+                    	}
+
+			const [res1, res2] = await Promise.all([
+				fetch('/ssl-validation?url=' + encodeURIComponent(url)),
+				fetch('/google-safe?url=' + encodeURIComponent(url))
+			]);
+		
+			if (res1.status === 200) {
+                alert(res1.status, res1.statusText)
+				document.getElementById("result1").classList.add("tick-icon");
+				document.getElementById("result1").innerHTML = "&#10004;"; // Tick symbol
+			} else {
+                alert(res1.status, res1.statusText)
+				document.getElementById("result1").classList.add("cross-icon");
+				document.getElementById("result1").innerHTML = "&times;"; // Cross symbol
+			}
+
+			if (res2.status === 200) {
+                alert(res2.status, res2.statusText)
+				document.getElementById("result2").classList.add("tick-icon");
+				document.getElementById("result2").innerHTML = "&#10004;"; // Tick symbol
+			} else {
+                alert(res2.status, res2.statusText)
+				document.getElementById("result2").classList.add("cross-icon");
+				document.getElementById("result2").innerHTML = "&times;"; // Cross symbol
+			}
+		} catch (error) {
+			console.error(error);
+		}
+		});
+
+        </script>
+
+        </center>
+    </div>
+<!--featurea-->
+<div class="features" id="feat">
+<p>
+
+1. <strong>Google Safe Browsing Integration</strong>: Utilizes Google Safe Browsing API to check the reputation of websites and identify potential spam or malicious content. <br>
+
+2. <strong>Real-time Website Analysis</strong>: Provides real-time analysis of website URLs to determine their safety status based on Google Safe Browsing database. <br>
+
+3. <strong>HTTPS Protocol Verification</strong>: Verifies whether the website uses HTTPS protocol, ensuring secure communication and data integrity. <br>
+
+4. <strong>Certificate Expiry Check</strong>: Checks the expiry date of SSL/TLS certificates used by websites, alerting users if the certificate is expired or soon to expire. <br>
+
+5. <strong>Comprehensive Security Assessment</strong>: Offers a comprehensive assessment of website security by combining Google Safe Browsing checks with HTTPS protocol and certificate verification. <br>
+
+6. <strong>User-Friendly Interface</strong>: Features an intuitive user interface that allows users to easily check the safety status of websites with minimal effort. <br>
+
+7. <strong>Fast and Efficient</strong>: Provides quick results, enabling users to make informed decisions about visiting or interacting with a particular website promptly. <br>
+
+8. <strong>Customizable Alerts</strong>: Allows users to set up customizable alerts or notifications for specific security criteria, such as expired certificates or unsafe websites. <br>
+
+9. <strong>API Integration</strong>: Offers seamless integration with other applications or services through an API, allowing developers to incorporate the spam detection functionality into their own projects. <br>
+
+10. <strong>Continuous Updates</strong>: Ensures that the spam detector remains up-to-date with the latest security threats and advancements in website security protocols. <br>
+</p>
+</div>
+    <!-- Footer -->
+    	<footer
+      class="page-footer font-small blue pt-4"
+      style="background-color: #007bff; color: white"
+    >
+      <!-- Footer Links -->
+      <div class="container-fluid text-center text-md-left" id="foot">
+        <!-- Grid row -->
+        <div class="row">
+          <!-- Grid column -->
+          <div class="col-md-6 mt-md-0 mt-3">
+            <!-- Content -->
+            <h5 class="text-uppercase">About us</h5>
+            <p>
+              Spam developer is developed as Mini project for semester 2 of MCA
+            </p>                                                                                            </div>
+          <!-- Grid column -->
+
+          <hr class="clearfix w-100 d-md-none pb-3" />
+
+          <!-- Grid column -->
+          <div class="col-md-3 mb-md-0 mb-3">                                                                 <!-- Links -->
+            <h5 class="text-uppercase">Contacts</h5>
+
+            <ul class="list-unstyled" style="color: white">
+              <li>
+                <a href="#"></a>
+        </li>
+        <li>
+            <a href="mailto:sudhirsapata@gamil.com"  style="color: white;">sudhirsapata@gamil.com</a>
+        </li>                                                                                             <li>
+            <a href="#!"></a>
+        </li>
+        <li>
+            <a href="mailto:pkhade2865@gmail.com" style="color: white;">pkhade2865@gmail.com</a>
+        </li>
+        </ul>
+    </div>
+    <!-- Grid column -->
+
+    <!-- Grid column -->
+    <div class="col-md-3 mb-md-0 mb-3">
+        <!-- Links -->
+        <h5 class="text-uppercase">FAQ</h5>
+
+        <ul class="list-unstyled">
+            <li>
+              <a href="tel:+919370236491" style="color: white;">+91 9370236491</a>
+            </li>
+            <li>
+              <a href="#!"></a>
+            </li>
+            <li>
+              <a href="tel:+919049792865" style="color: white;">+91 9049792865</a>
+            </li>
+            <li>
+                <a href="#!"></a>
+            </li>
+        </ul>
+    </div>
+    <!-- Grid column -->
+    </div>
+    <!-- Grid row -->
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">
+        © 2024 Copyright | Sudhir
+	</div>
+    <!-- Copyright -->
+    <!-- Footer -->
+</body>
+</html>
